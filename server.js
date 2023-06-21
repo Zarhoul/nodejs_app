@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 
@@ -9,9 +10,13 @@ app.use(express.json());
 // Serve static files from the "views" directory
 app.use(express.static(path.join(__dirname, 'views')));
 
+// Add body-parser middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 // Routes
 const userRoutes = require('./routes/userRoutes');
-app.use('/users', userRoutes);
+app.use(userRoutes);
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost/dbtest', { useNewUrlParser: true, useUnifiedTopology: true })

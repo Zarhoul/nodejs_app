@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const homeController = require('../controllers/homeController');
+const loginController = require('../controllers/loginController');
+
+// Route to display the page home
+router.get('/', homeController.displayView);
 
 // Route to display the login form
-router.get('/login', (req, res) => {
-  res.sendFile('login.html', { root: './views/auth' });
-});
+router.get('/login', loginController.displayLoginForm);
 
 // Route to handle the login form submission
-router.post('/login', userController.login);
+router.post('/login', loginController.processLogin);
 
-// Route to display the user list (accessible only for admin users)
-router.get('/listUsers', userController.displayView);
-
-// Define other routes
-router.get('/', userController.getAllUsers);
+// Define gestion data users routes
+router.get('/listUsers', userController.displayListUsers);
+router.get('/users', userController.getAllUsers);
 router.get('/add', userController.getAddUser);
 router.get('/edit/:id', userController.getEditUser);
 router.get('/:id', userController.getUserById);

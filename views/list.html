@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User List</title>
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mt-4 mb-4">User List</h1>
+        <div class="mt-4 mb-4">
+            <a href="/add" class="btn btn-primary">Add User</a>
+        </div>
+    </div>
+    <ul id="user-list" class="list-group mt-4"></ul>
+  </div>
+
+  <!-- Add Bootstrap JS (jQuery required for some Bootstrap components) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- ... -->
+<script>
+    // Fetch users and populate the user list
+    fetch('/users')
+      .then(response => response.json())
+      .then(users => {
+        const userList = document.getElementById('user-list');
+        users.forEach(user => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+          
+          const userDetails = document.createElement('div');
+          userDetails.textContent = user.username;
+  
+          const buttonsDiv = document.createElement('div');
+          buttonsDiv.classList.add('btn-group');
+  
+          const editButton = document.createElement('a');
+          editButton.href = `/edit/${user._id}`; // Update the href value
+          editButton.classList.add('btn', 'btn-primary', 'mr-2');
+          editButton.textContent = 'Edit';
+  
+          const deleteButton = document.createElement('button');
+          deleteButton.classList.add('btn', 'btn-danger');
+          deleteButton.textContent = 'Delete';
+  
+          // Add event listener to delete button
+          deleteButton.addEventListener('click', () => {
+            deleteUser(user._id);
+          });
+  
+          buttonsDiv.appendChild(editButton);
+          buttonsDiv.appendChild(deleteButton);
+  
+          listItem.appendChild(userDetails);
+          listItem.appendChild(buttonsDiv);
+          userList.appendChild(listItem);
+        });
+      });
+  
+    // Function to delete a user
+    function deleteUser(userId) {
+      fetch(`/${userId}`, {
+        method: 'DELETE'
+      })
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          // Refresh the user list after deletion
+          location.reload();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  </script>
+  <!-- ... -->
+  
+</body>
+</html>
